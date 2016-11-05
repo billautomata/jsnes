@@ -1,10 +1,12 @@
-# instrumented NES player
+# todo
 
-Browser boots up an NES ands queries for instructions.  Instructions are a list
-of frame inputs and an NES state.  The browser NES plays the frame inputs and
-returns the final state of the NES to the server.
+## client side application
+### record runs for study in the server side application
+* control an NES game and record the inputs along with the state of the NES at frame zero
+* play a recording of an NES inputs into the nes replaying a run
 
-The server is generating frame inputs in order
+## server side application
+### play runs recorded in the client side application
 
 
 # todo
@@ -26,3 +28,11 @@ sprite memory and the outputs are the controller values.
 * [ ] record the data (ppu_state, controller_state)
 * [ ] train the network
 * [ ] play the gaming using the network
+
+# instrumented NES player
+
+Browser boots up an NES ands queries for instructions.  Instructions are a list
+of frame inputs and an NES state.  The browser NES plays the frame inputs and
+returns the final state of the NES to the server.
+
+The server is generating frame inputs in order

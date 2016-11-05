@@ -18,32 +18,44 @@ module.exports = function (grunt) {
       }
     },
     standard: {
-      // options: {
-      //   format: true,
-      //   force: true
-      // },
-      // ng_dashboard: {
-      //   src: [
-      //     '{ng-dashboard/create/**/,ng-dashboard/resources/,ng-dashboard/create/,ng-dashboard/}*.js'
-      //   ]
-      // },
+      options: {
+        format: true,
+        force: true
+      },
+      client_application_webapp: {
+        src: [
+          './client_applicaiton/webapp/*.js'
+        ]
+      },
     },
     browserify: {
-      // dashboard_v1: {
-      //   src: 'dashboard/main.js',
-      //   dest: 'public/js/build/dashboard.js',
-      //   files: {
-      //     'public/js/build/dashboard.js': ['./dashboard/*.js', './dashboard/**/*.js', './dashboard/**/**/*.js' ],
-      //   },
-      //   options: {
-      //     transform: ['brfs'],
-      //     browserifyOptions: {
-      //       debug: true
-      //     }
-      //   }
-      // },
+      client_application_webapp: {
+        src: './client_application/webapp/main.js',
+        dest: '/client_application/build/build.js',
+        files: {
+          'public/js/build/dashboard.js': [
+            './client_application/*', './client_application/source/*.js', './client_application/webapp/*.js'
+          ],
+        },
+        options: {
+          transform: ['brfs'],
+          browserifyOptions: {
+            debug: true
+          }
+        }
+      },
     },
     watch: {
+      client_application : {
+        files: [ './client_application/*', './client_application/source/*.js', './client_application/webapp/*.js' ],
+        tasks: [ 'standard:client_application_webapp' ],
+        options: {
+          force: true,
+          livereload: {
+            port: 35729
+          }
+        }
+      }
       // ng_dashboard: {
       //   files: [ './ng-dashboard/*.js',
       //     './ng-dashboard/**/*.js' ],
