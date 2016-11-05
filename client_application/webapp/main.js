@@ -1,6 +1,8 @@
 var JSNES = window.JSNES
 var $ = window.$
 
+window.dvr = require('./dvr.js')()
+
 window.nes = new JSNES({
   'ui': $('#emulator').JSNESUI({
     'Homebrew': [
@@ -36,8 +38,16 @@ window.nes = new JSNES({
 })
 
 // console.log('heya')
-window.rom_url = '/local-roms/Tetris (U) [!].nes'
-window.nes.ui.loadROM()
+window.rom_url = '/local-roms/Mario Bros. (JU) [!].nes'
+window.nes.ui.loadROM(function () {
+  // window.dvr.init()
+  global_tick()
+})
+
+function global_tick () {
+  window.dvr.tick()
+  window.requestAnimationFrame(global_tick)
+}
 
 console.log('supppp')
 console.log(window.nes)

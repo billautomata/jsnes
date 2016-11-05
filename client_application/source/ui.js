@@ -177,7 +177,7 @@ if (typeof jQuery !== 'undefined') {
             };
 
             UI.prototype = {
-                loadROM: function() {
+                loadROM: function(callback) {
                     var self = this;
                     self.updateStatus("Downloading...");
                     $.ajax({
@@ -206,7 +206,8 @@ if (typeof jQuery !== 'undefined') {
                                 data = xhr.responseText;
                             }
                             self.nes.loadRom(data);
-                            self.nes.start();
+                            // self.nes.start();
+                            callback()
                             self.enable();
                         }
                     });
