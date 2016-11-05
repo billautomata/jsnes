@@ -19,7 +19,7 @@ module.exports = function (grunt) {
     },
     standard: {
       options: {
-        format: false,
+        format: true,
         // force: true
       },
       client_application_webapp: {
