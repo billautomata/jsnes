@@ -22,7 +22,7 @@ module.exports = function dvr () {
     nes_state_string = m.nes_state_string
     input_frames = m.input_frames
     window.nes.fromJSON(JSON.parse(nes_state_string))
-    window.nes.start()
+  // window.nes.start()
   }
   function start_recording () {
     // clear the input frames
@@ -52,14 +52,14 @@ module.exports = function dvr () {
         input_frames.push(window.nes.keyboard.state1.join('\t').split('\t'))
       }
       if (isPlayingRecording) {
-        console.log(current_frame_index)
+        console.log('playing recording', current_frame_index)
         input_frames[current_frame_index].forEach(function (v, idx) {
-          console.log(v)
           window.nes.keyboard.state1[idx] = v
         })
         current_frame_index += 1
-
-        current_frame_index %= input_frames.length
+        if (current_frame_index === input_frames.length - 1) {
+          setTimeout(play_recording, 10)
+        }
       }
       // console.log('frame')
       window.nes.frame()
