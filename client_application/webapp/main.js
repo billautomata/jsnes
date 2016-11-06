@@ -38,10 +38,18 @@ window.nes = new JSNES({
 })
 
 // console.log('heya')
-window.rom_url = '/local-roms/Mario Bros. (JU) [!].nes'
-window.nes.ui.loadROM(function () {
+// window.rom_url = '/local-roms/Mario Bros. (JU) [!].nes'
+window.rom_url = '/local-roms/Donkey Kong (JU) [p1].nes'
+window.nes.ui.loadROM(function (romdata) {
   // window.dvr.init()
   global_tick()
+// var other_nes = require('../../exported_source/JSNES.js')({ ui: {
+//     updateStatus: function (d) { console.log(d) },
+//     writeFrame: function () {}
+// }})
+// other_nes.loadRom(romdata)
+// other_nes.frame()
+// console.log(other_nes)
 })
 
 function global_tick () {
