@@ -1,21 +1,19 @@
 # todo
 
-## client side application
+## nes library
+* [ ] remove the UI 
+
+## client side application (./client_application/webapp/)
 ### record runs for study in the server side application
-* control an NES game and record the inputs along with the state of the NES at frame zero
-* play a recording of an NES inputs into the nes replaying a run
+* [x] control an NES game and record the inputs along with the state of the NES at frame zero
+* [x] play a recording of an NES inputs into the nes replaying a run
 
-## server side application
-### play runs recorded in the client side application
-
+## server side application (./server_application/)
+* [ ] play runs recorded in the client side application
+* [ ] generates NES profile data each frame
 
 # todo
 
-create a grunt task that
-* builds the jsnes browser file with a concat
-* builds the web application code that powers the UI
-* run standard
-* livereload
 
 # experiments
 
@@ -33,5 +31,3 @@ sprite memory and the outputs are the controller values.
 Browser boots up an NES ands queries for instructions.  Instructions are a list
 of frame inputs and an NES state.  The browser NES plays the frame inputs and
 returns the final state of the NES to the server.
-
-The server is generating frame inputs in order

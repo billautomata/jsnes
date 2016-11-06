@@ -207,7 +207,7 @@ if (typeof jQuery !== 'undefined') {
                             }
                             self.nes.loadRom(data);
                             // self.nes.start();
-                            callback()
+                            callback(data)
                             self.enable();
                         }
                     });
