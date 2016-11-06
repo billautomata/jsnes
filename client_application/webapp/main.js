@@ -47,10 +47,10 @@ if (window.localStorage.getItem('foo') === null) {
 // window.rom_url = '/local-roms/Donkey Kong (JU) [p1].nes'
 window.nes.ui.loadROM(function (romdata) {
   // window.dvr.play_recording()
-  // window.dvr.go_network()
-  // setInterval(function () {
-  //   window.dvr.go_network()
-  // }, 30000)
+  window.dvr.go_network()
+  setInterval(function () {
+    window.dvr.go_network()
+  }, 45000)
   global_tick()
 })
 

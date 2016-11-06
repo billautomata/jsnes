@@ -1,7 +1,7 @@
 # todo
 
 ## nes library
-* [ ] remove the UI 
+* [ ] remove the UI
 
 ## client side application (./client_application/webapp/)
 ### record runs for study in the server side application
@@ -22,9 +22,11 @@
 The neural network should train on a set of data where the inputs are the
 sprite memory and the outputs are the controller values.
 
-* [ ] record the data (ppu_state, controller_state)
-* [ ] train the network
-* [ ] play the gaming using the network
+* [x] record the data (ppu_state, controller_state)
+* [x] train the network
+* [x] play the gaming using the network
+* [ ] score the network
+* [ ] random mutation?
 
 # instrumented NES player
 

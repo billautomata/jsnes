@@ -20,7 +20,9 @@ module.exports = function dvr () {
   var networkRunning = false
 
   // var instance = Network.fromJSON(require('../mb_network2.json'))
-  var instance = Network.fromJSON(require('../mb_ppu_network.json'))
+  var instance = Network.fromJSON(require('../medium_network_16_4.json'))
+  // var instance2 = Network.fromJSON(require('../medium_network_16_4.json'))
+  // var instance = Network.fromJSON(require('../bad_network_16_4.json'))
   console.log(instance)
 
   // neural network stuff
@@ -93,11 +95,17 @@ module.exports = function dvr () {
       if (networkRunning) {
         // activate network on spritemem and
         var m = instance.activate(window.nes.ppu.spriteMem.map(function (o) { return o / 256 }))
+        // var m2 = instance2.activate(window.nes.ppu.spriteMem.map(function (o) { return o / 256 }))
         m = m.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
+        // m2 = m2.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
         console.log(m.join('\t'))
         window.nes.keyboard.state1[0] = m[0]
         window.nes.keyboard.state1[6] = m[1]
         window.nes.keyboard.state1[7] = m[2]
+        // window.nes.keyboard.state2[0] = m2[0]
+        // window.nes.keyboard.state2[6] = m2[1]
+        // window.nes.keyboard.state2[7] = m2[2]
+
         // window.nes.keyboard.state2[0] = m[0]
         // window.nes.keyboard.state2[6] = m[1]
         // window.nes.keyboard.state2[7] = m[2]
