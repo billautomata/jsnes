@@ -2,7 +2,7 @@ var fs = require('fs')
 var profiler = require('./profiler.js')
 var memory_data_to_jpeg = require('./memory_data_to_jpeg.js')
 
-var rundata = JSON.parse(fs.readFileSync('../runs/omb_play.json'))
+var rundata = JSON.parse(fs.readFileSync('../runs/longrun.json'))
 console.log(Object.keys(rundata))
 var run = profiler({
   rundata: rundata
