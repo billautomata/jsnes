@@ -15,8 +15,7 @@ create a grunt task that
 * builds the jsnes browser file with a concat
 * builds the web application code that powers the UI
 * run standard
-* livereloads
-
+* livereload
 
 # experiments
 
