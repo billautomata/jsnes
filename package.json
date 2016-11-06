@@ -21,6 +21,7 @@
     "grunt-express-server": "^0.5.3",
     "grunt-standard": "^2.0.0",
     "jpeg-js": "^0.2.0",
-    "socket.io": "^1.5.1"
+    "socket.io": "^1.5.1",
+    "synaptic": "git+https://github.com/billautomata/synaptic.git"
   }
 }

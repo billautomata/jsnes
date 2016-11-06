@@ -31,6 +31,7 @@ module.exports = function tojpeg(options){
     height: h
   }
 
+  console.log(r)
   fs.writeFileSync('./output/' + options.filename,
     jpeg.encode(r,100).data.toString('binary'), 'binary')
 
