@@ -24,24 +24,45 @@ module.exports = function dvr () {
   var mostFramesPlayed = 0
   var bestNet = ''
 
-  var k = require('../mb_network2.json')
+  var mutation_rate = 0.01
+  var mutation_size = 0.05
+  var input_threshold = 0.3
+
+  // profiling stuff
+  var detector = require('./array_change_detector.js')(window.nes.ppu.spriteMem)
+
+  // var k = require('../mb_network2.json')
+  var k = require('../condensed_inputs.json')
+  if (window.localStorage.getItem('bestNet') !== null) {
+    console.log('loading from disk')
+    k = JSON.parse(window.localStorage.getItem('bestNet'))
+  }
   bestNet = JSON.stringify(k)
 
   function mutate_net (net, rate, size) {
     console.log('mutating')
+    var n_mutations = 0
     net.connections.forEach(function (v, idx) {
-      if (Math.random() < rate) {
-        v.weight += (Math.random() * (size * 2.0)) - size
+      if (Math.random() <= rate) {
+        var value_to_add = (Math.random() * (size * 2.0)) - size
+        // console.log('adding', value_to_add, 'to', v.weight)
+        n_mutations += 1
+        v.weight += value_to_add
       }
     })
+    // net.neurons.forEach(function (v) {
+    // if (Math.random() <= rate) {
+    // v.activation += (Math.random() * (size * 2.0)) - size
+    // v.bias += (Math.random() * (size * 2.0)) - size
+    // n_mutations += 1
+    // }
+    // })
+    console.log('n_mutations', n_mutations)
   }
-  k.connections.forEach(function (v, idx) {
-    if (Math.random() < 0.001) {
-      v.weight += Math.random() * 0.1
-    }
-  })
-  console.log(k.connections.length)
 
+  console.log(k)
+  mutate_net(k, 0, 0)
+  // mutate_net(k, 1.0, mutation_size)
   var instance = Network.fromJSON(k)
   // var instance = Network.fromJSON(require('../medium_network_16_4.json'))
   // var instance = Network.fromJSON(require('../bad_network_16_4.json'))
@@ -96,7 +117,7 @@ module.exports = function dvr () {
   function load_state () {
     window.nes.fromJSON(JSON.parse(window.localStorage.getItem('foo-nes-state')))
   }
-
+  var useful_indexes = [ 0, 1, 2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 128, 129, 130, 131, 132, 133, 134, 135, 144, 145, 146, 147, 148, 149, 150, 151, 160, 161, 162, 163, 164, 165, 166, 167, 192, 193, 194, 195, 196, 197, 198, 199, 212 ]
   function tick () {
     // console.log('tick')
     if (!isPaused) {
@@ -118,9 +139,13 @@ module.exports = function dvr () {
       if (networkRunning) {
         framesPlayed += 1
         // activate network on spritemem and
-        var m = instance.activate(window.nes.ppu.spriteMem.map(function (o) { return o / 256 }))
+        var input_this_frame = []
+        useful_indexes.forEach(function (v) {
+          input_this_frame.push(window.nes.ppu.spriteMem[v] / 256)
+        })
+        var m = instance.activate(input_this_frame)
         // var m2 = instance2.activate(window.nes.ppu.spriteMem.map(function (o) { return o / 256 }))
-        m = m.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
+        m = m.map(function (o) { if (o > input_threshold) { return 65 } else { return 64 } })
         // m2 = m2.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
         // console.log(m.join('\t'))
         window.nes.keyboard.state1[0] = m[0]
@@ -133,36 +158,41 @@ module.exports = function dvr () {
         // window.nes.keyboard.state2[0] = m[0]
         // window.nes.keyboard.state2[6] = m[1]
         // window.nes.keyboard.state2[7] = m[2]
+        if (window.nes.cpu.mem[0x48] === 0) {
+          console.log('mario died')
+          console.log('best frames', mostFramesPlayed)
+          console.log('this run', framesPlayed)
+          // mario has died
+          // score the network
 
+          // determine if the score was the best
+          // if yes, store it
+          if (framesPlayed >= mostFramesPlayed) {
+            console.log('new best found')
+            mostFramesPlayed = framesPlayed
+            bestNet = JSON.stringify(k)
+            window.localStorage.setItem('bestNet', bestNet)
+          }
+
+          k = JSON.parse(bestNet)
+          mutate_net(k, mutation_rate, mutation_size)
+          instance = Network.fromJSON(k)
+          framesPlayed = 0
+          load_state()
+
+          // mutate the best network
+          // load_state()
+
+        }
       }
       // console.log('frame')
       window.nes.frame()
-
-      if (window.nes.cpu.mem[0x48] === 0) {
-        console.log('mario died')
-        console.log('best frames', mostFramesPlayed)
-        console.log('this run', framesPlayed)
-        // mario has died
-        // score the network
-
-        // determine if the score was the best
-        // if yes, store it
-        if (framesPlayed >= mostFramesPlayed) {
-          console.log('new best found')
-          mostFramesPlayed = framesPlayed
-          bestNet = JSON.stringify(k)
-        }
-
-        k = JSON.parse(bestNet)
-        mutate_net(k, 0.01, 0.01)
-        instance = Network.fromJSON(k)
-        framesPlayed = 0
-        load_state()
-
-        // mutate the best network
-        // load_state()
-
-      }
+      // detector.tick(window.nes.ppu.spriteMem)
+      // if (framesPlayed % 100 === 0) {
+      //   var a = []
+      //   detector.get_changes().forEach(function (v, idx) { if (v > 1) { a.push([idx].join(','))} })
+      //   console.log(a.join(','), a.length)
+      // }
 
     }
   }

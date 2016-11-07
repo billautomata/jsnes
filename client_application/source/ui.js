@@ -281,6 +281,10 @@ if (typeof jQuery !== 'undefined') {
                 },
 
                 writeFrame: function(buffer, prevBuffer) {
+                  if(window.draw_frame === 'blegh'){
+                    return;  
+                  }
+
                     var imageData = this.canvasImageData.data;
                     var pixel, i, j;
 

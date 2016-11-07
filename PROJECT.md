@@ -25,8 +25,16 @@ sprite memory and the outputs are the controller values.
 * [x] record the data (ppu_state, controller_state)
 * [x] train the network
 * [x] play the gaming using the network
-* [ ] score the network
-* [ ] random mutation?
+* [x] score the network
+* [x] random mutation?
+* [x] detect good PPU mem inputs
+* [ ] vizualize network 
+
+## how to make a network
+* save a state in the nes with an smb level loaded `window.dvr.save_state()`
+* run `sprite_trainer.js` in smb_data project
+* copy th json of the network to the client_application directory
+* change the require in client_application/webapp/dvr.js line 35 to use new json
 
 # instrumented NES player
 

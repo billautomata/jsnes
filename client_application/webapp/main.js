@@ -1,8 +1,6 @@
 var JSNES = window.JSNES
 var $ = window.$
 
-window.dvr = require('./dvr.js')()
-
 window.nes = new JSNES({
   'ui': $('#emulator').JSNESUI({
     'Homebrew': [
@@ -37,11 +35,13 @@ window.nes = new JSNES({
   })
 })
 
+window.dvr = require('./dvr.js')()
+
 // console.log('heya')
 window.rom_url = '/local-roms/Mario Bros. (JU) [!].nes'
 
 if (window.localStorage.getItem('foo') === null) {
-  window.localStorage.setItem('foo', JSON.stringify(require('../../runs/example_run.json')))
+  //  window.localStorage.setItem('foo', JSON.stringify(require('../../runs/example_run.json')))
 }
 
 // window.rom_url = '/local-roms/Donkey Kong (JU) [p1].nes'
@@ -52,6 +52,7 @@ window.nes.ui.loadROM(function (romdata) {
 })
 
 function global_tick () {
+  window.draw_frame = 'blegh'
   for (var i = 0; i < 100; i++) {
     window.dvr.tick()
   }
