@@ -9,8 +9,8 @@
 * [x] play a recording of an NES inputs into the nes replaying a run
 
 ## server side application (./server_application/)
-* [ ] play runs recorded in the client side application
-* [ ] generates NES profile data each frame
+* [x] play runs recorded in the client side application
+* [x] generates NES profile data each frame
 
 # todo
 
@@ -28,7 +28,15 @@ sprite memory and the outputs are the controller values.
 * [x] score the network
 * [x] random mutation?
 * [x] detect good PPU mem inputs
-* [ ] vizualize network 
+
+## decentralize it
+* server side mutation cycles
+* learn about how the network works, neuron activation types, etc
+* database driven learning, client pulls network, trains it, saves it
+* let users edit the network shape, weights, and activations
+* visualize network
+* client side: record gameplay, profile ppu + inputs, train new network with backprop, load network in stochastic mario trainer
+
 
 ## how to make a network
 * save a state in the nes with an smb level loaded `window.dvr.save_state()`

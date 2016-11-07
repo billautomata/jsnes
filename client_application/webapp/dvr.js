@@ -24,7 +24,7 @@ module.exports = function dvr () {
   var mostFramesPlayed = 0
   var bestNet = ''
 
-  var mutation_rate = 0.01
+  var mutation_rate = 0.1
   var mutation_size = 0.05
   var input_threshold = 0.3
 
