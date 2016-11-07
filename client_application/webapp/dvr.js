@@ -180,7 +180,7 @@ module.exports = function dvr () {
         } else {
           d3.select('div#LEFT').style('background-color', 'rgb(220,220,220)')
         }
-        if (m[1] === 65) {
+        if (m[2] === 65) {
           d3.select('div#RIGHT').style('background-color', 'red')
         } else {
           d3.select('div#RIGHT').style('background-color', 'rgb(220,220,220)')
