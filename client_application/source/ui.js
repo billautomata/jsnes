@@ -171,9 +171,9 @@ if (typeof jQuery !== 'undefined') {
                 /*
                  * Sound
                  */
-                self.dynamicaudio = new DynamicAudio({
-                    swf: nes.opts.swfPath+'dynamicaudio.swf'
-                });
+                // self.dynamicaudio = new DynamicAudio({
+                //     swf: nes.opts.swfPath+'dynamicaudio.swf'
+                // });
             };
 
             UI.prototype = {
@@ -282,7 +282,7 @@ if (typeof jQuery !== 'undefined') {
 
                 writeFrame: function(buffer, prevBuffer) {
                   if(window.draw_frame === 'blegh'){
-                    return;  
+                    return;
                   }
 
                     var imageData = this.canvasImageData.data;

@@ -3,17 +3,36 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>JSNES: A JavaScript NES emulator</title>
-
+    <style>
+      .button {
+        padding: 10px;
+        margin: 10px;
+        text-align: center;
+        color: white;
+        line-height: 3.1em;
+        border-radius: 4px;
+      }
+      .nes-roms {
+        display: none;
+      }
+      .nes-controls {
+        display: none;
+      }
+      .nes-status {
+        display: none;
+      }
+    </style>
 </head>
 
 <body>
-    <h1>JSNES</h1>
+    <div id="emulator" style='float: left;'>
+    </div>
 
-    <div id="emulator" style='float: left;'></div>
 
-    <div  style='float: right;'>
+    <div style='float: right; display: none;'>
+
     <h2>Controls</h2>
-    <table id="controls">
+    <table id="controls" >
         <tr>
             <th>Button</th>
             <th>Player 1</th>
@@ -61,9 +80,11 @@
     </table>
 
     </div>
+    <div id='network' style='float: right; width: 50%;'></div>
+    <h1 id='score' style='float: left;'></h1>
 
     <script src="lib/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="lib/dynamicaudio-min.js" type="text/javascript" charset="utf-8"></script>
+    <!-- <script src="lib/dynamicaudio-min.js" type="text/javascript" charset="utf-8"></script> -->
     <script src="source/nes.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/utils.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/cpu.js" type="text/javascript" charset="utf-8"></script>

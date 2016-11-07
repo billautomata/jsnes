@@ -1,6 +1,7 @@
 var jpeg = require('jpeg-js')
 var fs = require('fs')
 var synaptic = require('synaptic') // this line is not needed in the browser
+var d3 = require('d3')
 
 console.log('dvr starting up')
 
@@ -9,6 +10,8 @@ var Neuron = synaptic.Neuron,
   Network = synaptic.Network,
   Trainer = synaptic.Trainer,
   Architect = synaptic.Architect
+
+var useful_indexes = [ 0, 1, 2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 128, 129, 130, 131, 132, 133, 134, 135, 144, 145, 146, 147, 148, 149, 150, 151, 160, 161, 162, 163, 164, 165, 166, 167, 192, 193, 194, 195, 196, 197, 198, 199, 212 ]
 
 module.exports = function dvr () {
   var current_frame_index = 0
@@ -25,19 +28,43 @@ module.exports = function dvr () {
   var bestNet = ''
 
   var mutation_rate = 0.1
-  var mutation_size = 0.05
-  var input_threshold = 0.3
+  var mutation_size = 10.0
+  var input_threshold = 0.5
 
   // profiling stuff
-  var detector = require('./array_change_detector.js')(window.nes.ppu.spriteMem)
+  // var detector = require('./array_change_detector.js')(window.nes.ppu.spriteMem)
 
-  // var k = require('../mb_network2.json')
-  var k = require('../condensed_inputs.json')
-  if (window.localStorage.getItem('bestNet') !== null) {
-    console.log('loading from disk')
-    k = JSON.parse(window.localStorage.getItem('bestNet'))
-  }
+  // liquid
+  // var input = useful_indexes.length
+  // var pool = 1
+  // var output = 3
+  // var connections = 4
+  // var gates = 3
+  //
+  // var instance = new Architect.Liquid(input, pool, output, connections, gates)
+
+  // var HIDDEN_SIZE = 4
+  // var instance = new Architect.Perceptron(useful_indexes.length, HIDDEN_SIZE, 3)
+
+  // load from file
+  var k = require('../liquid.json')
+  var instance = Network.fromJSON(k)
+
+  var k = instance.toJSON()
+  console.log(k)
+  mutate_net(k, 1, 10)
   bestNet = JSON.stringify(k)
+
+  // neural network stuff
+  // if (window.localStorage.getItem('bestNet') !== null) {
+  //   console.log('loading from disk')
+  //   k = JSON.parse(window.localStorage.getItem('bestNet'))
+  // }
+
+  // console.log(k)
+  //
+
+  console.log(instance)
 
   function mutate_net (net, rate, size) {
     console.log('mutating')
@@ -50,29 +77,23 @@ module.exports = function dvr () {
         v.weight += value_to_add
       }
     })
-    // net.neurons.forEach(function (v) {
-    // if (Math.random() <= rate) {
-    // v.activation += (Math.random() * (size * 2.0)) - size
-    // v.bias += (Math.random() * (size * 2.0)) - size
-    // n_mutations += 1
-    // }
-    // })
+    net.neurons.forEach(function (v, idx) {
+      if (Math.random() <= rate) {
+        var value_to_add = (Math.random() * (size * 2.0)) - size
+        // console.log('adding', value_to_add, 'to', v.weight)
+        n_mutations += 1
+        v.bias += value_to_add
+      }
+    })
+    require('./nn_draw.js')({
+      data: net
+    })
     console.log('n_mutations', n_mutations)
   }
 
-  console.log(k)
-  mutate_net(k, 0, 0)
-  // mutate_net(k, 1.0, mutation_size)
-  var instance = Network.fromJSON(k)
-  // var instance = Network.fromJSON(require('../medium_network_16_4.json'))
-  // var instance = Network.fromJSON(require('../bad_network_16_4.json'))
-  console.log(instance)
-
-  // neural network stuff
-
   function init () {
     // reset all the state
-    window.nes.start()
+    // window.nes.start()
     isRecording = false
     isPlayingRecording = false
   }
@@ -117,7 +138,7 @@ module.exports = function dvr () {
   function load_state () {
     window.nes.fromJSON(JSON.parse(window.localStorage.getItem('foo-nes-state')))
   }
-  var useful_indexes = [ 0, 1, 2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 128, 129, 130, 131, 132, 133, 134, 135, 144, 145, 146, 147, 148, 149, 150, 151, 160, 161, 162, 163, 164, 165, 166, 167, 192, 193, 194, 195, 196, 197, 198, 199, 212 ]
+
   function tick () {
     // console.log('tick')
     if (!isPaused) {
@@ -148,6 +169,23 @@ module.exports = function dvr () {
         m = m.map(function (o) { if (o > input_threshold) { return 65 } else { return 64 } })
         // m2 = m2.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
         // console.log(m.join('\t'))
+
+        if (m[0] === 65) {
+          d3.select('div#JUMP').style('background-color', 'red')
+        } else {
+          d3.select('div#JUMP').style('background-color', 'rgb(220,220,220)')
+        }
+        if (m[1] === 65) {
+          d3.select('div#LEFT').style('background-color', 'red')
+        } else {
+          d3.select('div#LEFT').style('background-color', 'rgb(220,220,220)')
+        }
+        if (m[1] === 65) {
+          d3.select('div#RIGHT').style('background-color', 'red')
+        } else {
+          d3.select('div#RIGHT').style('background-color', 'rgb(220,220,220)')
+        }
+
         window.nes.keyboard.state1[0] = m[0]
         window.nes.keyboard.state1[6] = m[1]
         window.nes.keyboard.state1[7] = m[2]
@@ -158,7 +196,7 @@ module.exports = function dvr () {
         // window.nes.keyboard.state2[0] = m[0]
         // window.nes.keyboard.state2[6] = m[1]
         // window.nes.keyboard.state2[7] = m[2]
-        if (window.nes.cpu.mem[0x48] === 0) {
+        if (window.nes.cpu.mem[0x48] === 1) {
           console.log('mario died')
           console.log('best frames', mostFramesPlayed)
           console.log('this run', framesPlayed)
@@ -171,6 +209,7 @@ module.exports = function dvr () {
             console.log('new best found')
             mostFramesPlayed = framesPlayed
             bestNet = JSON.stringify(k)
+            d3.select('h1#score').html('Best Run: ' + mostFramesPlayed + ' frames played.')
             window.localStorage.setItem('bestNet', bestNet)
           }
 
