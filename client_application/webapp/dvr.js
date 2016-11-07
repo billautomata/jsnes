@@ -17,11 +17,33 @@ module.exports = function dvr () {
   var isPlayingRecording
   var isPaused
   var nes_state_string = ''
-  var networkRunning = false
 
-  // var instance = Network.fromJSON(require('../mb_network2.json'))
-  var instance = Network.fromJSON(require('../medium_network_16_4.json'))
-  // var instance2 = Network.fromJSON(require('../medium_network_16_4.json'))
+  // network stuff
+  var networkRunning = false
+  var framesPlayed = 0
+  var mostFramesPlayed = 0
+  var bestNet = ''
+
+  var k = require('../mb_network2.json')
+  bestNet = JSON.stringify(k)
+
+  function mutate_net (net, rate, size) {
+    console.log('mutating')
+    net.connections.forEach(function (v, idx) {
+      if (Math.random() < rate) {
+        v.weight += (Math.random() * (size * 2.0)) - size
+      }
+    })
+  }
+  k.connections.forEach(function (v, idx) {
+    if (Math.random() < 0.001) {
+      v.weight += Math.random() * 0.1
+    }
+  })
+  console.log(k.connections.length)
+
+  var instance = Network.fromJSON(k)
+  // var instance = Network.fromJSON(require('../medium_network_16_4.json'))
   // var instance = Network.fromJSON(require('../bad_network_16_4.json'))
   console.log(instance)
 
@@ -88,17 +110,19 @@ module.exports = function dvr () {
           window.nes.keyboard.state1[idx] = v
         })
         current_frame_index += 1
-        if (current_frame_index === input_frames.length - 1) {
+        if (current_frame_index >= input_frames.length - 1) {
+          console.log('frame index reset')
           setTimeout(play_recording, 1)
         }
       }
       if (networkRunning) {
+        framesPlayed += 1
         // activate network on spritemem and
         var m = instance.activate(window.nes.ppu.spriteMem.map(function (o) { return o / 256 }))
         // var m2 = instance2.activate(window.nes.ppu.spriteMem.map(function (o) { return o / 256 }))
         m = m.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
         // m2 = m2.map(function (o) { if (o > 0.01) { return 65 } else { return 64 } })
-        console.log(m.join('\t'))
+        // console.log(m.join('\t'))
         window.nes.keyboard.state1[0] = m[0]
         window.nes.keyboard.state1[6] = m[1]
         window.nes.keyboard.state1[7] = m[2]
@@ -110,36 +134,36 @@ module.exports = function dvr () {
         // window.nes.keyboard.state2[6] = m[1]
         // window.nes.keyboard.state2[7] = m[2]
 
-      // most in array is button
-      // var max_idx = -1
-      // var max_value = 0
-      // console.log(m.join('\t'))
-      // m.forEach(function (v, _i) {
-      //   if (max_value < v) {
-      //     max_value = v
-      //     max_idx = _i
-      //   }
-      // })
-      // if (max_idx !== -1) {
-      //   if (max_idx === 0) {
-      //     window.nes.keyboard.state1[0] = 65
-      //     window.nes.keyboard.state1[6] = 64
-      //     window.nes.keyboard.state1[7] = 64
-      //   }
-      //   if (max_idx === 1) {
-      //     window.nes.keyboard.state1[0] = 64
-      //     window.nes.keyboard.state1[6] = 65
-      //     window.nes.keyboard.state1[7] = 64
-      //   }
-      //   if (max_idx === 2) {
-      //     window.nes.keyboard.state1[0] = 64
-      //     window.nes.keyboard.state1[6] = 64
-      //     window.nes.keyboard.state1[7] = 65
-      //   }
-      // }
       }
       // console.log('frame')
       window.nes.frame()
+
+      if (window.nes.cpu.mem[0x48] === 0) {
+        console.log('mario died')
+        console.log('best frames', mostFramesPlayed)
+        console.log('this run', framesPlayed)
+        // mario has died
+        // score the network
+
+        // determine if the score was the best
+        // if yes, store it
+        if (framesPlayed >= mostFramesPlayed) {
+          console.log('new best found')
+          mostFramesPlayed = framesPlayed
+          bestNet = JSON.stringify(k)
+        }
+
+        k = JSON.parse(bestNet)
+        mutate_net(k, 0.01, 0.01)
+        instance = Network.fromJSON(k)
+        framesPlayed = 0
+        load_state()
+
+        // mutate the best network
+        // load_state()
+
+      }
+
     }
   }
   return {

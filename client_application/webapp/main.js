@@ -48,16 +48,13 @@ if (window.localStorage.getItem('foo') === null) {
 window.nes.ui.loadROM(function (romdata) {
   // window.dvr.play_recording()
   window.dvr.go_network()
-  setInterval(function () {
-    window.dvr.go_network()
-  }, 45000)
   global_tick()
 })
 
 function global_tick () {
-  // for (var i = 0; i < 10; i++) {
-  window.dvr.tick()
-  // }
+  for (var i = 0; i < 100; i++) {
+    window.dvr.tick()
+  }
   window.requestAnimationFrame(global_tick)
 }
 
